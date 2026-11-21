@@ -11,65 +11,66 @@
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <stdint.h>
 
-void	**get_allocs_array(void)
+static void		**g_allocs;
+static size_t	g_alloc_count;
+static size_t	g_alloc_capacity;
+
+static void	grow_allocs(void)
 {
-	static void	*allocs[MAX_TRACKED_ALLOCS];
+	void	**allocs;
+	size_t	capacity;
 
-	return (allocs);
-}
-
-size_t	*get_alloc_count(void)
-{
-	static size_t	count = 0;
-
-	return (&count);
+	capacity = 64;
+	if (g_alloc_capacity)
+	{
+		if (g_alloc_capacity > SIZE_MAX / 2 / sizeof(*allocs))
+			ft_exit(EXIT_FAILURE);
+		capacity = g_alloc_capacity * 2;
+	}
+	allocs = malloc(capacity * sizeof(*allocs));
+	if (!allocs)
+	{
+		perror("MiniShell: malloc");
+		ft_exit(EXIT_FAILURE);
+	}
+	if (g_alloc_count)
+		ft_memcpy(allocs, g_allocs, g_alloc_count * sizeof(*allocs));
+	free(g_allocs);
+	g_allocs = allocs;
+	g_alloc_capacity = capacity;
 }
 
 void	*ft_malloc(size_t size)
 {
 	void	*ptr;
-	size_t	*count;
-	void	**allocs;
 
+	if (g_alloc_count == g_alloc_capacity)
+		grow_allocs();
 	ptr = malloc(size);
 	if (!ptr)
 	{
 		perror("MiniShell: malloc");
 		ft_exit(EXIT_FAILURE);
 	}
-	count = get_alloc_count();
-	allocs = get_allocs_array();
-	if (*count < MAX_TRACKED_ALLOCS)
-		allocs[(*count)++] = ptr;
-	else
-	{
-		free(ptr);
-		ft_putstr_fd("MiniShell: maximum tracked allocations reached\n", 2);
-		return (NULL);
-	}
+	g_allocs[g_alloc_count++] = ptr;
 	return (ptr);
 }
 
 void	ft_free(void *ptr)
 {
-	size_t	*count;
-	void	**allocs;
 	size_t	i;
 
 	if (!ptr)
 		return ;
-	count = get_alloc_count();
-	allocs = get_allocs_array();
 	i = 0;
-	while (i < *count)
+	while (i < g_alloc_count)
 	{
-		if (allocs[i] == ptr)
+		if (g_allocs[i] == ptr)
 		{
-			free(ptr);
-			allocs[i] = allocs[*count - 1];
-			(*count)--;
-			return ;
+			g_allocs[i] = g_allocs[--g_alloc_count];
+			break ;
 		}
 		i++;
 	}
@@ -78,17 +79,9 @@ void	ft_free(void *ptr)
 
 void	free_all(void)
 {
-	size_t	*count;
-	void	**allocs;
-	size_t	i;
-
-	count = get_alloc_count();
-	allocs = get_allocs_array();
-	i = 0;
-	while (i < *count)
-	{
-		free(allocs[i]);
-		i++;
-	}
-	*count = 0;
+	while (g_alloc_count)
+		free(g_allocs[--g_alloc_count]);
+	free(g_allocs);
+	g_allocs = NULL;
+	g_alloc_capacity = 0;
 }

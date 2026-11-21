@@ -25,8 +25,6 @@
 # include <limits.h>
 # include <errno.h>
 
-# define MAX_TRACKED_ALLOCS INT_MAX
-
 typedef struct s_list	t_list;
 typedef struct s_env	t_env;
 typedef struct s_redir	t_redir;
@@ -159,8 +157,6 @@ int			ft_check(t_redir *ptr);
 void		closeall(void);
 char		*ft_replace_env(char *str, t_env *env);
 int			ft_strlcpy_without_term(char *dest, char *src);
-void		**get_allocs_array(void);
-size_t		*get_alloc_count(void);
 void		*ft_malloc(size_t size);
 void		ft_free(void *ptr);
 void		free_all(void);

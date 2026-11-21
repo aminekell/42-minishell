@@ -34,7 +34,7 @@ void	restore_parent_signals(t_help *help)
 		}
 		else if (term_sig == SIGQUIT)
 		{
-			write(2, "Quit: 3\n", 9);
+			write(2, "Quit: 3\n", 8);
 			exit_status(1, 131);
 		}
 	}

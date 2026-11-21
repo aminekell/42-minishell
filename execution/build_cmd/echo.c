@@ -85,7 +85,7 @@ int	exe_exit(char **args, t_help *help)
 
 	i = 1;
 	if (isatty(0) && help->list->type != TYPE_PIPE && help->first)
-		write(2, "exit\n", 6);
+		write(2, "exit\n", 5);
 	if (!ft_strcmp(args[1], "\0"))
 		error_exit(args[1]);
 	if (!args[1])

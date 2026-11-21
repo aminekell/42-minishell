@@ -24,7 +24,7 @@ static t_env	*init_env(char **envp, t_export **ptr)
 		new_env = creat_env(envp);
 	else
 	{
-		write(2, "MiniShell: Warning: env not SET!!!!\n", 37);
+		write(2, "MiniShell: Warning: env not SET!!!!\n", 36);
 		getcwd(buffer, PATH_MAX);
 		new_env = ft_malloc(sizeof(t_env));
 		new_env->key = ft_strdup("_");
@@ -51,7 +51,7 @@ int	main(int argc, char *argv[], char **envp)
 	(1) && ((void)argc, (void)argv, ptr = NULL);
 	setup_signals();
 	if (!isatty(0) || !isatty(1))
-		write(2, "MiniShell: the program most be run on tty\n", 43);
+		write(2, "MiniShell: the program most be run on tty\n", 42);
 	env_list = init_env(envp, &ptr);
 	while (1)
 	{
@@ -59,7 +59,7 @@ int	main(int argc, char *argv[], char **envp)
 		line = readline("minishell@1337-> ");
 		if (!line)
 		{
-			write(STDOUT_FILENO, "exit\n", 6);
+			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
 		if (!ft_parser(&list, &line, env_list))

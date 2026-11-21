@@ -15,7 +15,7 @@ make
 ./minishell
 ```
 
-Build on a Unix-like system with a C compiler, Make, and GNU Readline development headers. Try `echo "hello" | wc -c` at the shell prompt.
+Build on a Unix-like system with a C compiler, Make, and GNU Readline development headers. Run it in an interactive terminal. Try `echo "hello" | wc -c` at the shell prompt.
 
 ## Credits
 
